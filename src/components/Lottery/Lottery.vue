@@ -2,8 +2,8 @@
   <div>
       <div class="wheel">
       <div class="wheel-container">
-        <div class="wheel-arrow-container">
-          <div class="wheel-arrow"></div>
+        <div class="wheel-arrow-container">       
+          <!-- <div class="wheel-arrow"></div>  -->
           <div class="wheel-start" @click="roll">
             {{startButtonText}}
           </div>
@@ -31,6 +31,7 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  padding: 5px;
 }
 .wheel-container {
   position: relative;
@@ -40,8 +41,10 @@
 .wheel-background {
   width: inherit;
   height: inherit;
-  background-color: yellow;
+  background-color: white;
   border-radius: 50%;
+  border: 1px solid black;
+  box-shadow: 0 0 1px 2px gray;
 }
 .wheel-arrow-container {
   position: absolute;
@@ -50,7 +53,8 @@
   border-radius: 50%;
   width: 20%;
   height: 20%;
-  background-color: red;
+  background: radial-gradient(white, white, grey);
+  box-shadow: 0 0 1px 2px darkgray;
   transform-origin: center 60%;
   z-index: 2;
   display: flex;
@@ -64,6 +68,7 @@
   border-bottom: 60px solid red;
   position: absolute;
   top: -50px;
+  z-index: -1;
 }
 .wheel-start {
   position: absolute;
@@ -142,7 +147,7 @@ export default {
       // let rotateAngle =
       //   this.startRotatingDegree - this.startRotatingDegree % 360 +
       //    this.rotations * 360 - this.resultAngles[resultIndex]; // Rotate pointer
-      
+
       this.startRotatingDegree = rotateAngle;
       this.rotateAngle = "rotate(" + rotateAngle + "deg)";
       // unlock lottery
@@ -158,9 +163,9 @@ export default {
       // send to back end
       console.log(winner);
     },
-    sliceRotation (index) {
-      const rotateAngle = index * this.sliceAngle + this.sliceOffset
-      return `rotate(${rotateAngle}deg)`
+    sliceRotation(index) {
+      const rotateAngle = index * this.sliceAngle + this.sliceOffset;
+      return `rotate(${rotateAngle}deg)`;
     }
   },
   computed: {
@@ -214,7 +219,7 @@ export default {
       return this.sliceAngle / 2;
     },
     startButtonText() {
-      return this.options.startButtonText || 'Start'
+      return this.options.startButtonText || "Start";
     }
   }
 };
