@@ -2,10 +2,12 @@
   <div>
       <div class="wheel">
       <div class="wheel-container">
-        <div class="wheel-arrow-container">       
-          <!-- <div class="wheel-arrow"></div>  -->
-          <div class="wheel-start" @click="roll">
-            {{startButtonText}}
+        <div class="wheel-start-container">
+          <div class="wheel-arrow"></div>
+          <div class="wheel-start-button">
+            <div class="wheel-start-text" @click="roll">
+              {{startButtonText}}
+            </div>
           </div>
         </div>
         <div class="wheel-background" :style="{transform:rotateAngle,transition:rotateTransition}">
@@ -16,7 +18,7 @@
             <div class="prize-list prize-item-container" v-for="(prize, index) in prizeList" :key="index" :style="{transform: sliceRotation(index)}">
               <div class="prize-list prize-item" :style="{width: `calc(100% * 3.14 / ${prizeList.length})`}">
                 <div class="prize-name">{{prize.name}}</div>
-                <div>Image placeholder</div>
+                <div v-if="prize.image"><img :src="prize.image"/></div>
               </div>
             </div>
           </div>
@@ -31,12 +33,15 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  padding: 5px;
+  padding: 10px;
 }
 .wheel-container {
   position: relative;
   height: 600px;
   width: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .wheel-background {
   width: inherit;
@@ -44,54 +49,62 @@
   background-color: white;
   border-radius: 50%;
   border: 1px solid black;
-  box-shadow: 0 0 1px 2px gray;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.3));
 }
-.wheel-arrow-container {
+.wheel-start-container {
   position: absolute;
-  top: 40%;
-  left: 40%;
-  border-radius: 50%;
   width: 20%;
   height: 20%;
-  background: radial-gradient(white, white, grey);
-  box-shadow: 0 0 1px 2px darkgray;
-  transform-origin: center 60%;
   z-index: 2;
   display: flex;
   justify-content: center;
 }
 .wheel-arrow {
-  width: 0;
-  height: 0;
-  border-left: 25px solid transparent;
-  border-right: 25px solid transparent;
-  border-bottom: 60px solid red;
+  border-left: 24px solid transparent;
+  border-right: 24px solid transparent;
+  border-bottom: 60px solid silver;
   position: absolute;
-  top: -50px;
-  z-index: -1;
+  transform: scaleX(0.766) translateY(-50px);
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.6));
 }
-.wheel-start {
+
+.wheel-start-text {
   position: absolute;
   width: 100%;
   top: 30%;
   font-size: 2em;
+  z-index: 2;
 }
-.wheel-start:hover {
+
+.wheel-start-button {
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(white, white, grey);
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.65));
+  opacity: 1; /* for dev */
+}
+
+.wheel-start-button:hover {
   cursor: pointer;
 }
+
 .prize-list {
   width: 100%;
   height: 100%;
   position: absolute;
   z-index: 1;
 }
+
 .prize-item-container {
   display: flex;
   justify-content: center;
 }
+
 .prize-name {
   font-size: 20px;
 }
+
 .prize-item {
   height: 50%;
   margin: auto;
