@@ -3,9 +3,10 @@
       <div class="wheel">
       <div class="wheel-container">
         <div class="wheel-start-container">
+          <!-- <arrow/> -->
           <div class="wheel-arrow"></div>
-          <div class="wheel-start-button">
-            <div class="wheel-start-text" @click="roll">
+          <div class="wheel-start-button" @click="roll">
+            <div class="wheel-start-text">
               {{startButtonText}}
             </div>
           </div>
@@ -16,7 +17,7 @@
           </div>
           <div class="prize-list">
             <div class="prize-list prize-item-container" v-for="(prize, index) in prizeList" :key="index" :style="{transform: sliceRotation(index)}">
-              <div class="prize-list prize-item" :style="{width: `calc(100% * 3.14 / ${prizeList.length})`}">
+              <div class="prize-list prize-item" :style="{width: `calc(100% * ${Math.PI} / ${prizeList.length})`}">
                 <div class="prize-name">{{prize.name}}</div>
                 <div v-if="prize.image"><img :src="prize.image"/></div>
               </div>
@@ -25,6 +26,7 @@
         </div>
       </div>
       </div>
+      
   </div>
 </template>
 <style scoped>
@@ -50,6 +52,8 @@
   border-radius: 50%;
   border: 1px solid black;
   filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.3));
+  box-sizing: border-box;
+  position: absolute;
 }
 .wheel-start-container {
   position: absolute;
@@ -62,7 +66,7 @@
 .wheel-arrow {
   border-left: 24px solid transparent;
   border-right: 24px solid transparent;
-  border-bottom: 60px solid silver;
+  border-bottom: 60px solid lightgray;
   position: absolute;
   transform: scaleX(0.766) translateY(-50px);
   filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.6));
@@ -77,16 +81,48 @@
 }
 
 .wheel-start-button {
+  user-select: none;
   border-radius: 50%;
   width: 100%;
   height: 100%;
-  background: radial-gradient(white, white, grey);
   filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.65));
-  opacity: 1; /* for dev */
+  background: radial-gradient(white, white, gray);
+  transition: background-color 1s linear;
 }
 
 .wheel-start-button:hover {
   cursor: pointer;
+}
+
+.wheel-start-button:before {
+  content: "";
+  display: block;
+  padding: 50%;
+  position: absolute;
+  border-radius: inherit;
+  background: radial-gradient(white, white, lightgray);
+  transition: all 0.5s;
+}
+
+.wheel-start-button:hover:before {
+  opacity: 0;
+  background-color: radial-gradient(white, white, gray);
+}
+
+.wheel-start-button:after {
+  content: "";
+  border-radius: 50%;
+  display: block;
+  position: absolute;
+  padding: 50%;
+  background: lightgray;
+  transition: all 1s;
+  opacity: 0;
+}
+
+.wheel-start-button:active:after {
+  opacity: 1;
+  transition: 0s;
 }
 
 .prize-list {
@@ -115,10 +151,12 @@
   position: absolute;
   content: "";
   height: 50%;
-  border-right: 1px solid black;
+  border-right: 2px solid black;
+  -webkit-font-smoothing: none;
 }
 </style>
 <script>
+import Arrow from "./LotteryButton/ButtonArrow";
 export default {
   props: ["options"],
   data() {
@@ -234,6 +272,9 @@ export default {
     startButtonText() {
       return this.options.startButtonText || "Start";
     }
+  },
+  components: {
+    arrow: Arrow
   }
 };
 </script>
