@@ -1,5 +1,15 @@
 # vue-lottery
-vue-lottery provides a vue + CSS 3 lottery spinner solution for you. Note: this is a WIP project
+vue-lottery is a simple lottery spinner VueJS plugin.
+
+<!-- # Install -->
+
+<!-- # Quick Start (Demo)
+``` javascript
+import Vue from 'vue'
+import Lottery from 'vue-lottery'
+
+Vue.use(Lottery)
+```  -->
 
 # License
 MIT License
