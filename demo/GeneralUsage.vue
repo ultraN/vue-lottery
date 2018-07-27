@@ -1,13 +1,11 @@
 <template>
-<div>
-    <lottery :options="options"></lottery>
-</div>
+  <div>
+      <v-lottery :options="options"></v-lottery>
+  </div>
 </template>
 <style>
-
 </style>
 <script>
-import Lottery from "./Lottery/Lottery";
 export default {
   data() {
     return {
@@ -19,9 +17,6 @@ export default {
         startButtonText: "抽奖"
       }
     };
-  },
-  components: {
-    lottery: Lottery
   },
   methods: {
     loadPrizeList() {

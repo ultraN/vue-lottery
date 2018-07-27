@@ -1,15 +1,17 @@
 <template>
   <div id="app">
-    <router-view/>
+    <general-usage/>
   </div>
 </template>
-
 <script>
+import GeneralUsage from "./GeneralUsage";
 export default {
-  name: "app"
+  name: "demo",
+  components: {
+    GeneralUsage
+  }
 };
 </script>
-
 <style>
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;

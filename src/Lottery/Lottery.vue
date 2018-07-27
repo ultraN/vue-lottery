@@ -3,7 +3,6 @@
       <div class="wheel">
       <div class="wheel-container">
         <div class="wheel-start-container">
-          <!-- <arrow/> -->
           <div class="wheel-arrow"></div>
           <div class="wheel-start-button" @click="roll">
             <div class="wheel-start-text">
@@ -158,6 +157,7 @@
 <script>
 import Arrow from "./LotteryButton/ButtonArrow";
 export default {
+  name: "VLottery",
   props: ["options"],
   data() {
     return {
