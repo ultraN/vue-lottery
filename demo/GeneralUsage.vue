@@ -1,6 +1,6 @@
 <template>
   <div>
-      <v-lottery :options="options"></v-lottery>
+      <v-lottery :options="options" diameter="600px" :winner="winner"></v-lottery>
   </div>
 </template>
 <style>
@@ -13,51 +13,97 @@ export default {
         prizes: [],
         rotations: 6,
         rotatingTime: 5, // seconds
-        rotateTransition: "transform 6s ease-in-out",
-        startButtonText: "抽奖"
-      }
+        startButtonText: "Spin!",
+        callback: this.callback,
+        roll: this.rollFunction
+      },
+      winner: null
     };
   },
   methods: {
     loadPrizeList() {
       this.options.prizes = [
         {
-          name: "一等奖",
-          chance: 1
+          name: "First",
+          chance: 1,
+          image: "doge/dogedoge.jpg"
         },
         {
-          name: "二等奖",
-          chance: 2
+          name: "Second",
+          chance: 2,
+          image: "doge/doge.jpg"
         },
         {
-          name: "再接再厉",
-          chance: 10
+          name: "Sorry",
+          chance: 10,
+          image: "doge/doge.jpg"
         },
         {
-          name: "三等奖",
-          chance: 7
+          name: "Thrid",
+          chance: 7,
+          image: "doge/doge.jpg"
         },
         {
-          name: "四等奖",
-          chance: 10
+          name: "Forth",
+          chance: 10,
+          image: "doge/doge.jpg"
         },
         {
-          name: "再接再厉",
-          chance: 5
+          name: "Next Time",
+          chance: 5,
+          image: "doge/doge.jpg"
         },
         {
-          name: "五等奖",
-          chance: 20
+          name: "Fifth",
+          chance: 20,
+          image: "doge/doge.jpg"
         },
         {
-          name: "六等奖",
-          chance: 40
+          name: "Sixth",
+          chance: 40,
+          image: "doge/doge.jpg"
         },
         {
-          name: "再接再厉",
-          chance: 5
+          name: "Nope",
+          chance: 5,
+          image: "doge/doge.jpg"
         }
       ];
+    },
+    callback(winner) {
+      alert("Congratulations! You've won " + winner.name + " Prize");
+    },
+    rollFunction() {
+      // Should retrieve winner from server
+      let hit = Math.floor(Math.random() * 100 + 1);
+      let winner = this.prizeRange().findIndex(function(prize) {
+        return hit <= prize.max && hit >= prize.min;
+      });
+      this.winner = winner;
+    },
+    prizeRange() {
+      let range = [];
+      for (let i = 0; i < this.options.prizes.length; i++) {
+        if (i > 1) {
+          range.push({
+            min: range[i - 1].max + 1,
+            max: range[i - 1].max + this.options.prizes[i].chance
+          });
+        } else if (i === this.options.prizes.length - 1) {
+          // last one
+          range.push({
+            min: range[i - 1].max + 1,
+            max: 100
+          });
+        } else {
+          // first one
+          range.push({
+            min: 1,
+            max: this.options.prizes[i].chance
+          });
+        }
+      }
+      return range;
     }
   },
   mounted() {
