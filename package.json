@@ -1,11 +1,13 @@
 {
-  "name": "vue-lottery",
-  "version": "0.0.1",
+  "name": "@anonymous.arthur/vue-lottery",
+  "version": "0.0.2",
   "description": "A simple lottery spinner VueJS plugin.",
   "main": "src/index.js",
   "private": false,
   "files": [
-    "src"
+    "src",
+    "public",
+    "demo"
   ],
   "scripts": {
     "demo": "vue-cli-service serve ./demo/main.js --open",
