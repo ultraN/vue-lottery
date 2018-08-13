@@ -233,6 +233,16 @@ export default {
     sliceRotation(index) {
       const rotateAngle = index * this.sliceAngle + this.sliceOffset;
       return { transform: `rotate(${rotateAngle}deg)` };
+    },
+    reset() {
+      // TODO: reset wheel
+      // let rotateAngle =
+      //   this.startRotatingDegree +
+      //   this.rotations * 360 +
+      //   this.resultAngles[0] -
+      //   this.startRotatingDegree % 360;
+      // this.startRotatingDegree = rotateAngle;
+      // this.rotateAngle = "rotate(" + rotateAngle + "deg)";
     }
   },
   computed: {
@@ -283,16 +293,6 @@ export default {
       return {
         width: `calc(100% * ${Math.PI} / ${this.prizeList.length})`
       };
-    },
-    reset() {
-      // TODO: reset wheel
-      // let rotateAngle =
-      //   this.startRotatingDegree +
-      //   this.rotations * 360 +
-      //   this.resultAngles[0] -
-      //   this.startRotatingDegree % 360;
-      // this.startRotatingDegree = rotateAngle;
-      // this.rotateAngle = "rotate(" + rotateAngle + "deg)";
     }
   },
   components: {
