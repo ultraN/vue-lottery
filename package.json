@@ -1,6 +1,6 @@
 {
   "name": "@anonymous.arthur/vue-lottery",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple lottery spinner VueJS plugin.",
   "main": "src/index.js",
   "private": false,
