@@ -1,31 +1,37 @@
 <template>
   <div>
-      <div class="wheel">
+      <div class="wheel" :style="{
+        width: diameter,
+        height: diameter
+      }">
       <div class="wheel-container">
-        <div class="wheel-start-container">
-          <div class="wheel-arrow"></div>
-          <div class="wheel-start-button" @click="roll">
-            <div class="wheel-start-text">
-              {{startButtonText}}
+          <div class="wheel-start-container">
+            <div class="wheel-arrow"></div>
+            <div class="wheel-start-button" @click="roll">
+              <div class="wheel-start-text">
+                {{startButtonText}}
+              </div>
             </div>
           </div>
-        </div>
-        <div class="wheel-background" :style="{transform:rotateAngle,transition:rotateTransition}">
-          <div class="prize-list split" :style="{transform: `rotate(${sliceOffset}deg)`}">
-            <div class="prize-list prize-item-container" v-for="(prize, index) in prizeList" :key="index" :style="{transform: sliceRotation(index)}"/>
+        <div class="wheel-background" :style="wheelRotation">
+          <div class="prize-list split" :style="sliceOffsetTranform">
+            <div class="prize-list prize-item-container" v-for="(prize, index) in prizeList" :key="index" :style="sliceRotation(index)"/>
           </div>
           <div class="prize-list">
-            <div class="prize-list prize-item-container" v-for="(prize, index) in prizeList" :key="index" :style="{transform: sliceRotation(index)}">
-              <div class="prize-list prize-item" :style="{width: `calc(100% * ${Math.PI} / ${prizeList.length})`}">
-                <div class="prize-name">{{prize.name}}</div>
-                <div v-if="prize.image"><img :src="prize.image"/></div>
+            <div class="prize-list prize-item-container" v-for="(prize, index) in prizeList" :key="index" :style="sliceRotation(index)">
+              <div class="prize-list prize-item" :style="slice">
+                <div class="prize-name">
+                  {{prize.name}}
+                </div>
+                <div v-if="prize.image">
+                  <img style="max-width: 50%; max-height: 50%;" :src="prize.image"/>
+                  </div>
               </div>
             </div>
           </div>
         </div>
       </div>
       </div>
-      
   </div>
 </template>
 <style scoped>
@@ -36,14 +42,25 @@
   overflow: hidden;
   padding: 10px;
 }
+
 .wheel-container {
   position: relative;
-  height: 600px;
-  width: 600px;
+  height: 100%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
+.wheel-start-container {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 20%;
+  height: 20%;
+  z-index: 2;
+}
+
 .wheel-background {
   width: inherit;
   height: inherit;
@@ -54,20 +71,13 @@
   box-sizing: border-box;
   position: absolute;
 }
-.wheel-start-container {
-  position: absolute;
-  width: 20%;
-  height: 20%;
-  z-index: 2;
-  display: flex;
-  justify-content: center;
-}
+
 .wheel-arrow {
-  border-left: 24px solid transparent;
-  border-right: 24px solid transparent;
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
   border-bottom: 60px solid lightgray;
   position: absolute;
-  transform: scaleX(0.766) translateY(-50px);
+  transform: scaleX(0.6) translateY(-50px);
   filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.6));
 }
 
@@ -83,7 +93,6 @@
   user-select: none;
   border-radius: 50%;
   width: 100%;
-  height: 100%;
   filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.65));
   background: radial-gradient(white, white, gray);
   transition: background-color 1s linear;
@@ -158,7 +167,26 @@
 import Arrow from "./LotteryButton/ButtonArrow";
 export default {
   name: "VLottery",
-  props: ["options"],
+  props: {
+    options: {
+      validator: function(options) {
+        return (
+          options.hasOwnProperty("prizes") &&
+          options.hasOwnProperty("callback") &&
+          options.hasOwnProperty("roll") &&
+          options.hasOwnProperty("startButtonText")
+        );
+      }
+    },
+    diameter: {
+      required: false,
+      default: "400px",
+      type: String
+    },
+    winner: {
+      required: true
+    }
+  },
   data() {
     return {
       startRotatingDegree: 0,
@@ -167,26 +195,14 @@ export default {
     };
   },
   methods: {
-    winner() {
-      // Should retrieve winner from server
-      let hit = Math.floor(Math.random() * 100 + 1);
-      let winner = this.prizeRange.findIndex(function(prize) {
-        return hit <= prize.max && hit >= prize.min;
-      });
-      return winner;
-    },
     roll() {
       if (!this.disabled) return;
-      let winner = this.winner();
-      this.rotating(winner);
+      this.options.roll();
     },
     rotating(winner) {
       if (!this.disabled) return;
       this.sendResult(winner);
-      // let duringTime = 5;
       let resultIndex = winner; // Last piece
-      // let resultAngle = [337.5, 292.5, 247.5, 202.5, 157.5, 112.5, 67.5, 22.5];
-      // let randCircle = 6; // rotations
       this.disabled = false; // disable lottery
       // roll
       let rotateAngle =
@@ -205,10 +221,10 @@ export default {
       setTimeout(() => {
         this.disabled = true;
         this.gameOver(winner);
-      }, this.rotatingTime * 1000 + 1500);
+      }, this.rotatingTime * 1000 + 255);
     },
     gameOver(winner) {
-      alert("恭喜你！获得了 " + this.prizeList[winner].name);
+      this.options.callback(this.prizeList[winner]);
     },
     sendResult(winner) {
       // send to back end
@@ -216,36 +232,12 @@ export default {
     },
     sliceRotation(index) {
       const rotateAngle = index * this.sliceAngle + this.sliceOffset;
-      return `rotate(${rotateAngle}deg)`;
+      return { transform: `rotate(${rotateAngle}deg)` };
     }
   },
   computed: {
     prizeList() {
       return (this.options && this.options.prizes) || [];
-    },
-    prizeRange() {
-      let range = [];
-      for (let i = 0; i < this.prizeList.length; i++) {
-        if (i > 1) {
-          range.push({
-            min: range[i - 1].max + 1,
-            max: range[i - 1].max + this.prizeList[i].chance
-          });
-        } else if (i === this.prizeList.length - 1) {
-          // last one
-          range.push({
-            min: range[i - 1].max + 1,
-            max: 100
-          });
-        } else {
-          // first one
-          range.push({
-            min: 1,
-            max: this.prizeList[i].chance
-          });
-        }
-      }
-      return range;
     },
     rotations() {
       return this.options.rotations || 1;
@@ -258,10 +250,14 @@ export default {
       return angles;
     },
     rotatingTime() {
-      return this.options.rotatingTime || 5;
+      return (
+        (Number.isInteger(this.options.rotatingTime) &&
+          this.options.rotatingTime) ||
+        5
+      );
     },
     rotateTransition() {
-      return this.options.rotateTransition || "transform 5s ease-in-out";
+      return `transform ${this.options.rotatingTime}s ease-in-out`;
     },
     sliceAngle() {
       return this.prizeList.length > 0 ? 360 / this.prizeList.length : 0;
@@ -271,10 +267,45 @@ export default {
     },
     startButtonText() {
       return this.options.startButtonText || "Start";
+    },
+    wheelRotation() {
+      return {
+        transform: this.rotateAngle,
+        transition: this.rotateTransition
+      };
+    },
+    sliceOffsetTranform() {
+      return {
+        transform: `rotate(${this.sliceOffset}deg)`
+      };
+    },
+    slice() {
+      return {
+        width: `calc(100% * ${Math.PI} / ${this.prizeList.length})`
+      };
+    },
+    reset() {
+      // TODO: reset wheel
+      // let rotateAngle =
+      //   this.startRotatingDegree +
+      //   this.rotations * 360 +
+      //   this.resultAngles[0] -
+      //   this.startRotatingDegree % 360;
+      // this.startRotatingDegree = rotateAngle;
+      // this.rotateAngle = "rotate(" + rotateAngle + "deg)";
     }
   },
   components: {
     arrow: Arrow
+  },
+  watch: {
+    winner(winner) {
+      if (winner !== null && winner !== undefined) {
+        this.rotating(winner);
+      } else {
+        this.reset();
+      }
+    }
   }
 };
 </script>
