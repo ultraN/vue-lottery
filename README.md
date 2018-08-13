@@ -1,8 +1,16 @@
 # vue-lottery
 vue-lottery is a simple lottery spinner VueJS plugin.
-
-<!-- # Install -->
-
+<!-- # Install
+``` bash
+npm install
+npm run demo
+``` -->
+# Demo
+Run command on this repository root.
+``` bash
+npm install
+npm run demo
+```
 <!-- # Quick Start (Demo)
 ``` javascript
 import Vue from 'vue'
